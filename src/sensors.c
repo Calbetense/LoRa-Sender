@@ -45,8 +45,9 @@ float get_cont(){
     return value/MAX_SAMPLES;
 }
 
-
+#ifdef cali
 float contCompensate(float cont, float temp){                   /* Source: https://how2electronics.com/iot-based-tds-meter-using-esp8266-for-water-quality-monitoring/ */
     float temperatureCoefficient = 1.0 + 0.019 * (temp - 25.0);    
     return (cont / temperatureCoefficient) * ecCalibration; //Cuál es la calibración??
 }
+#endif

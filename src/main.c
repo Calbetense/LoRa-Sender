@@ -9,37 +9,39 @@
 
 const char* TAG = "MAIN";
 
-void main(void *p){
+void main_task(void *p){
 
     //Declarations
     Data_t toSend;
-    float temp;
+    //float temp;
 
     //Loop
     while(1){
         toSend.id = Temp;
         toSend.data = get_temp();
-        temp = toSend.data;
-        lora_send(toSend);
-        ESP_LOGI(TAG, "TEMP send, %f", toSend.data);
+        //temp = toSend.data;
+        lora_utils_send(toSend);
+        //ESP_LOGI(TAG, "TEMP send, %f", toSend.data);
         vTaskDelay(CHANGE_DELAY);
 
+/*
         toSend.id = O2;
         toSend.data = get_o2();
         lora_send(toSend);
         ESP_LOGI(TAG, "O2 send, %f", toSend.data);
         vTaskDelay(CHANGE_DELAY);
-
+*/
+/*
         toSend.id = Cont;
         toSend.data = get_cont();
         contCompensate(toSend.data, temp);
         lora_send(toSend);
         ESP_LOGI(TAG, "CONT send, %f", toSend.data);
         vTaskDelay(CHANGE_DELAY);
+*/
 
         //If more, just follow the schem
         
-        //lora_sleep();         //Remember Lora also sleeps
         //Everything_sleep();   //Sleeps 2h
     }
 }
@@ -51,12 +53,12 @@ void app_main() {
     //o2_init();
     
     //Cond init (ADC1, Channel 0)
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_0);
+    //adc1_config_width(ADC_WIDTH_BIT_12);
+    //adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_0);
 
     ESP_LOGI(TAG, "Everything's init.");
 
-    xTaskCreate(main, "main", 1024, NULL, 1, NULL);
+    xTaskCreate(main_task, "main", 1024, NULL, 1, NULL);
 
     vTaskDelete(NULL);
 }

@@ -15,10 +15,12 @@
 
 /*Defines*/
 #define NUM_SENSORS     3
-#define SENSOR_DELAY    pdMS_TO_TICKS(10*1000) //10seconds    
-#define CHANGE_DELAY    pdMS_TO_TICKS(2/*Hour*/*60/*Minutes*/*60/*Seconds*/*1000/*Miliseconds*/)
+#define SENSOR_DELAY    pdMS_TO_TICKS(2*1000) //10seconds    
+#define CHANGE_DELAY    pdMS_TO_TICKS(500) //pdMS_TO_TICKS(2/*Hour*/*60/*Minutes*/*60/*Seconds*/*1000/*Miliseconds*/)
 
 #define MAX_SAMPLES     3
+
+#define GPIO            0
 
 /*Defines needed of LoRa Library*/
 #define CONFIG_CS_GPIO      18
@@ -48,8 +50,8 @@ typedef struct
     float get_o2(void);
     float get_cont(void);
 
-    float contCompensate(float cont, float temp);
+   // float contCompensate(float cont, float temp);
 
     // LoRa
-void lora_utils_init();           //TODO
-void lora_utils_send(Data_t d); //TODO
+void lora_utils_init();           
+void lora_utils_send(Data_t d); 
