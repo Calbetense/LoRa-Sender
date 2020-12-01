@@ -7,6 +7,7 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include <esp_log.h>
+#include <esp_sleep.h>
 
 #include "lora.h"               /*https://github.com/Inteform/esp32-lora-library*/
 #include "ds18b20.h"            /*https://github.com/feelfreelinux/ds18b20*/
@@ -15,12 +16,13 @@
 
 /*Defines*/
 #define NUM_SENSORS     3
-#define SENSOR_DELAY    pdMS_TO_TICKS(2*1000) //10seconds    
-#define CHANGE_DELAY    pdMS_TO_TICKS(500) //pdMS_TO_TICKS(2/*Hour*/*60/*Minutes*/*60/*Seconds*/*1000/*Miliseconds*/)
+#define SENSOR_DELAY    pdMS_TO_TICKS(1*1000) //1seconds    
+#define CHANGE_DELAY    pdMS_TO_TICKS(5*1000) //2seconds
+#define SLEEP_DELAY     5*1000000ULL //2/*Hour*/*60/*Minutes*/*60/*Seconds*/*1000/*Miliseconds*/*1000/*usec*/ULL
 
 #define MAX_SAMPLES     3
 
-#define GPIO            0
+#define GPIO            17          //GPIO for OneWire
 
 /*Defines needed of LoRa Library*/
 #define CONFIG_CS_GPIO      18
@@ -46,6 +48,9 @@ typedef struct
 /*declarations*/
     
     // Sensors
+    void init_o2(void);
+    void init_cont(void);
+
     float get_temp(void);
     float get_o2(void);
     float get_cont(void);
