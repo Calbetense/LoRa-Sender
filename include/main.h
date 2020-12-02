@@ -15,7 +15,7 @@
 #include <driver/adc.h>         /*ADC, conductivity*/
 
 /*Defines*/
-#define NUM_SENSORS     3
+#define NUM_SENSORS     4
 #define SENSOR_DELAY    pdMS_TO_TICKS(1*1000) //1seconds    
 #define CHANGE_DELAY    pdMS_TO_TICKS(5*1000) //2seconds
 #define SLEEP_DELAY     5*1000000ULL //2/*Hour*/*60/*Minutes*/*60/*Seconds*/*1000/*Miliseconds*/*1000/*usec*/ULL
@@ -35,7 +35,8 @@
 typedef enum {
     O2,
     Temp,
-    Cont
+    Cont,
+    Orp
 }Id_t;
 
 typedef struct
@@ -48,12 +49,12 @@ typedef struct
 /*declarations*/
     
     // Sensors
-    void init_o2(void);
-    void init_cont(void);
+    void analog_init(void);
 
     float get_temp(void);
     float get_o2(void);
     float get_cont(void);
+    float get_orp(void);
 
    // float contCompensate(float cont, float temp);
 

@@ -32,8 +32,13 @@ void main_task(void *p){
         toSend.data = get_cont();
         lora_utils_send(toSend);
         ESP_LOGI(TAG, "CONT send, %f", toSend.data);
-        //vTaskDelay(CHANGE_DELAY);
+        vTaskDelay(CHANGE_DELAY);
 
+        toSend.id = Orp;
+        toSend.data = get_orp();
+        lora_utils_send(toSend);
+        ESP_LOGI(TAG, "ORP send, %f", toSend.data);
+        //vTaskDelay(CHANGE_DELAY);
 
         //If more, just follow the schem
 
@@ -49,8 +54,7 @@ void app_main() {
 
     lora_utils_init();
     ds18b20_init(GPIO); // Temp Init
-    init_o2();
-    init_cont();
+    analog_init();      // O2, cont and ORP init
 
     ESP_LOGI(TAG, "Everything's init. (Teorically)");
 

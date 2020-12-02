@@ -9,17 +9,20 @@
 
 #include "main.h"
 
-void init_o2(void){
-    //Cond init (ADC1, Channel 0)
+void analog_init(void){
+    
     adc1_config_width(ADC_WIDTH_BIT_12);
+    
+    //Cond init (ADC1, Channel 0)
     adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_0);
+
+    //Cond init (ADC1, Channel 1)
+    adc1_config_channel_atten(ADC1_CHANNEL_1,ADC_ATTEN_DB_0);   
+
+    //Cond init (ADC1, Channel 2)
+    adc1_config_channel_atten(ADC1_CHANNEL_2,ADC_ATTEN_DB_0);   
 }
 
-void init_cont(void){
-    //Cond init (ADC1, Channel 1)
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_config_channel_atten(ADC1_CHANNEL_1,ADC_ATTEN_DB_0);   
-}
 
 float get_temp(){
     uint8_t i;
@@ -52,6 +55,19 @@ float get_cont(){
     for(i = 0; i < MAX_SAMPLES; i++){
         value += (float)adc1_get_raw(ADC1_CHANNEL_1);           // Lectura analógica!! Las compensaciones se hacen después
         vTaskDelay(SENSOR_DELAY);                               //Mínimo 5 segundos
+    }
+
+    return value/MAX_SAMPLES;
+}
+
+
+float get_orp(void){
+    uint8_t i;
+    float   value = 0;
+
+    for(i = 0; i < MAX_SAMPLES; i++){
+        value += (float)adc1_get_raw(ADC1_CHANNEL_0);
+        vTaskDelay(SENSOR_DELAY);
     }
 
     return value/MAX_SAMPLES;
