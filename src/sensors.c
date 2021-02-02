@@ -3,24 +3,33 @@
 
     Functions to get the data from sensors.
     All of them must return an average of several samples.
-    Return value of FLOAT
+    Return FLOAT value
 */
 
 
 #include "main.h"
 
+//Global - General ADC Calibration 
+esp_adc_cal_characteristics_t adc_cal;
+
 void analog_init(void){
     
-    adc1_config_width(ADC_WIDTH_BIT_12);
+    adc1_config_width(ADC_WIDTH_BIT_10);                        
     
-    //Cond init (ADC1, Channel 0)
-    adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_0);
+    //O2 init (ADC1, Channel 0)
+    adc1_config_channel_atten(ADC1_CHANNEL_1,ADC_ATTEN_DB_11);   // O2
 
+    #ifdef CONT
     //Cond init (ADC1, Channel 1)
-    adc1_config_channel_atten(ADC1_CHANNEL_1,ADC_ATTEN_DB_0);   
+    adc1_config_channel_atten(ADC1_CHANNEL_0,ADC_ATTEN_DB_11);   // Cont
+    #endif
 
-    //Cond init (ADC1, Channel 2)
-    adc1_config_channel_atten(ADC1_CHANNEL_2,ADC_ATTEN_DB_0);   
+    #ifdef ORP
+    //ORP init (ADC1, Channel 2)
+    adc1_config_channel_atten(ADC1_CHANNEL_2,ADC_ATTEN_DB_11);   // ORP?
+    #endif
+
+    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_10, 1100, &adc_cal);
 }
 
 
@@ -41,41 +50,52 @@ float get_o2(){
     float   value = 0;
 
     for(i = 0; i < MAX_SAMPLES; i++){
-        value += (float)adc1_get_raw(ADC1_CHANNEL_0);
+        value += (float)adc1_get_raw(ADC1_CHANNEL_1);
         vTaskDelay(SENSOR_DELAY);
     }
 
-    return value/MAX_SAMPLES;
+    //Result in mV
+    value = (float)esp_adc_cal_raw_to_voltage(value/MAX_SAMPLES, &adc_cal); 
+
+    value *= 100/O2_CALIBRATION; 
+    value += O2_SOLUTION_CALIBRATION;
+
+    return value;     
 }
 
+#ifdef CONT         // If you finnaly work with this, reestructure the calibration part to be like the other parameters
 float get_cont(){
     uint8_t i;
     float   value = 0;
 
     for(i = 0; i < MAX_SAMPLES; i++){
-        value += (float)adc1_get_raw(ADC1_CHANNEL_1);           // Lectura analógica!! Las compensaciones se hacen después
-        vTaskDelay(SENSOR_DELAY);                               //Mínimo 5 segundos
+        value += (float)adc1_get_raw(ADC1_CHANNEL_1);           
+        vTaskDelay(SENSOR_DELAY);                               
     }
 
-    return value/MAX_SAMPLES;
+    return esp_adc_cal_raw_to_voltage(value/MAX_SAMPLES, &adc_cal);
 }
+#endif 
 
-
+#ifdef ORP
 float get_orp(void){
     uint8_t i;
     float   value = 0;
 
     for(i = 0; i < MAX_SAMPLES; i++){
-        value += (float)adc1_get_raw(ADC1_CHANNEL_0);
+        value += (float)adc1_get_raw(ADC1_CHANNEL_2);
+        //ESP_LOGI("PRUEBAS", "value = %f", value);
         vTaskDelay(SENSOR_DELAY);
     }
+    value /= MAX_SAMPLES;
+    //ESP_LOGI("PRUEBAS", "Average value = %f", value);
 
-    return value/MAX_SAMPLES;
-}
+    value = (float)esp_adc_cal_raw_to_voltage(value, &adc_cal);
+    //ESP_LOGI("PRUEBAS", "Voltage of value = %f", value);
 
-#ifdef cali
-float contCompensate(float cont, float temp){                   /* Source: https://how2electronics.com/iot-based-tds-meter-using-esp8266-for-water-quality-monitoring/ */
-    float temperatureCoefficient = 1.0 + 0.019 * (temp - 25.0);    
-    return (cont / temperatureCoefficient) * ecCalibration; //Cuál es la calibración??
+    value -= (1500 + ORP_CALIBRATION);   
+    //ESP_LOGI("PRUEBAS", "Result of value = %f", value);
+
+    return value;
 }
 #endif
