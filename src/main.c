@@ -14,6 +14,9 @@ void main_task(void *p){
 
     //Declarations
     Data_t toSend;
+    #ifdef CONVERT_DO
+    float temp_now = 0;    
+    #endif
 
     //Loop
     while(1){
@@ -21,20 +24,23 @@ void main_task(void *p){
         toSend.id = Temp;
         toSend.data = get_temp();
         lora_utils_send(toSend);
+        
+        #ifdef CONVERT_DO
+        temp_now = toSend.data;
+        #endif
+
         #ifdef DEBUG
         ESP_LOGI(TAG, "TEMP send, %f", toSend.data);
         #endif
         vTaskDelay(CHANGE_DELAY);
 
-        /*      Allow the Oxygen just when the probe is ready
         toSend.id = O2;
-        toSend.data = get_o2();
+        toSend.data = get_o2(temp_now);
         lora_utils_send(toSend);
         #ifdef DEBUG
         ESP_LOGI(TAG, "O2 send, %f", toSend.data);
         #endif
         vTaskDelay(CHANGE_DELAY);
-        */
 
         #ifdef CONT
         toSend.id = Cont;

@@ -14,6 +14,8 @@
 #include <driver/adc.h>         /*ADC*/
 #include <esp_adc_cal.h>
 
+#include <math.h>               // EXP and log
+
 /********** Defines ***********/
 #define NUM_SENSORS     4
 #define SENSOR_DELAY    pdMS_TO_TICKS(1*1000)  // Time each sensor waits between samples 
@@ -26,11 +28,13 @@
 #define GPIO            17          // GPIO for OneWire (Temp)
 
 //#define DEBUG
-//#define CONT                       // Not used yet
-#define ORP             
+//#define CONT                      // Not used yet
+#define ORP            
+#define CONVERT_DO                  //CONVERT THE DO, TESTING
 
 #define O2_CALIBRATION          142
 #define O2_SOLUTION_CALIBRATION 0
+#define PRES                    0.9611      // Not contrasted. Units: atm
 #define ORP_CALIBRATION         19.0
 
 
@@ -63,14 +67,16 @@ typedef struct{
 void analog_init(void); //Here we initialize every analog channel we will use
 
 float get_temp(void);
-float get_o2(void);
+float get_o2(float);
 #ifdef CONT
 float get_cont(void);
 #endif
 #ifdef ORP
 float get_orp(void);    
 #endif
-
+#ifdef CONVERT_DO
+float convert_do(float, float);
+#endif
 
 // LoRa
 void lora_utils_init();           
