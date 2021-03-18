@@ -17,11 +17,12 @@
 #include <math.h>               // EXP and log
 
 /********** Defines ***********/
-#define NUM_SENSORS     4
+#define NUM_SENSORS     3
 #define SENSOR_DELAY    pdMS_TO_TICKS(1*1000)  // Time each sensor waits between samples 
 #define CHANGE_DELAY    pdMS_TO_TICKS(5*1000)  // Time machine waits while changing between sensors
 //#define SLEEP_DELAY     5400000000ULL/*1.5 hour*/  // Time of the nap
-#define SLEEP_DELAY     1800000000ULL/*0.5 hour*/  // Time of the nap
+//#define SLEEP_DELAY     1800000000ULL/*0.5 hour*/  // Time of the nap
+#define SLEEP_DELAY     60*1000   // 1 minute
 
 #define MAX_SAMPLES     10           
 

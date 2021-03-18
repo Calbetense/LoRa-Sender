@@ -60,8 +60,8 @@ float get_o2(float temp_now){
     value /= O2_CALIBRATION; 
     value += O2_SOLUTION_CALIBRATION;
 
-    #ifdef CONVERT_DO
-    value = convert_do(temp_now, value);
+    #ifdef CONVERT_DO                       // Get the value in mg/L instead of %Sat
+    value = convert_do(temp_now, value);    
     #endif
 
 
