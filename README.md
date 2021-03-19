@@ -10,8 +10,8 @@ The sensors are:
 <\center>
 * Disolved Oxygen: From _Atlas Scientific_. Analog sensor. Needs calibration and converts the units from %Sat to mg/L. 
 <center>
-![DO_sensor](https://cdn.shopify.com/s/files/1/1386/3791/products/atlas-scientific-water-quality-gravity-analog-dissolved-oxygen-kit-atlas-scientific-14468538695767_large.jpg?v=1596851961){width=30%}
+![DO_sensor](https://cdn.shopify.com/s/files/1/1386/3791/products/atlas-scientific-water-quality-gravity-analog-dissolved-oxygen-kit-atlas-scientific-14468538695767_large.jpg?v=1596851961){ width=30% }
 <\center>
 * ORP: From _Atlas Scientific_. Analog sensor. Needs calibration. Documentation: [Atlas Scientific ORP](https://atlas-scientific.com/kits/gravity-analog-orp-kit/)
 
-![ORP_Sensor](https://cdn.shopify.com/s/files/1/1386/3791/products/atlas-scientific-water-quality-gravity-analog-orp-kit-atlas-scientific-14468509040727_large.jpg?v=1596850638){width=30%}
+![ORP_Sensor](https://cdn.shopify.com/s/files/1/1386/3791/products/atlas-scientific-water-quality-gravity-analog-orp-kit-atlas-scientific-14468509040727_large.jpg?v=1596850638){ width=30% }
