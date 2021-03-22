@@ -14,6 +14,8 @@ void main_task(void *p){
 
     //Declarations
     Data_t toSend;
+    toSend.sender = BERCARIO_01;            // Change this data with the place the sensors are placed
+
     #ifdef CONVERT_DO
     float temp_now = 0;    
     #endif

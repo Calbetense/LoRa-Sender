@@ -48,6 +48,7 @@
 
 /********** Structures *********/
 
+// Parameter 
 typedef enum {
     O2,
     Temp,
@@ -55,9 +56,15 @@ typedef enum {
     Orp
 }Id_t;
 
+// Place
+typedef enum {
+    BERCARIO_01
+}Id_sender_t;
+
 /*The final results are sent with an identifier to the reciver*/
 typedef struct{
     Id_t id;
+    Id_sender_t sender;
     float data;
 }Data_t;
 
