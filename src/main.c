@@ -40,7 +40,7 @@ void main_task(void *p){
         toSend.data = get_o2(temp_now);
         lora_utils_send(toSend);
         #ifdef DEBUG
-        ESP_LOGI(TAG, "O2 send, %f", toSend.data);
+        ESP_LOGI(TAG, "O2 send, %f\n\n", toSend.data);
         #endif
         vTaskDelay(CHANGE_DELAY);
 

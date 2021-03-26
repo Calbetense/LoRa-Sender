@@ -18,24 +18,24 @@
 
 /********** Defines ***********/
 #define NUM_SENSORS     3
-#define SENSOR_DELAY    pdMS_TO_TICKS(1*1000)  // Time each sensor waits between samples 
-#define CHANGE_DELAY    pdMS_TO_TICKS(5*1000)  // Time machine waits while changing between sensors
+#define SENSOR_DELAY    pdMS_TO_TICKS(800)  // Time each sensor waits between samples 
+#define CHANGE_DELAY    pdMS_TO_TICKS(3*1000)  // Time machine waits while changing between sensors
 //#define SLEEP_DELAY     5400000000ULL/*1.5 hour*/  // Time of the nap
 //#define SLEEP_DELAY     1800000000ULL/*0.5 hour*/  // Time of the nap
 #define SLEEP_DELAY     60*1000   // 1 minute
 
-#define MAX_SAMPLES     10           
+#define MAX_SAMPLES     20           
 
 #define GPIO            17          // GPIO for OneWire (Temp)
 
-//#define DEBUG
+#define DEBUG
 //#define CONT                      // Not used yet
-#define ORP            
+//#define ORP            
 #define CONVERT_DO                  //CONVERT THE DO, TESTING
 
-#define O2_CALIBRATION          142
+#define O2_CALIBRATION          870
 #define O2_SOLUTION_CALIBRATION 0
-#define PRES                    0.9611      // Not contrasted. Units: atm
+#define PRES                    0.9910f      // contrasted. Units: atm
 #define ORP_CALIBRATION         19.0
 
 

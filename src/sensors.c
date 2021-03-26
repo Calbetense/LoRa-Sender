@@ -58,7 +58,7 @@ float get_o2(float temp_now){
     value = (float)esp_adc_cal_raw_to_voltage(value, &adc_cal); 
 
     value /= O2_CALIBRATION; 
-    value += O2_SOLUTION_CALIBRATION;
+    //value += O2_SOLUTION_CALIBRATION; //Not need of this
 
     #ifdef CONVERT_DO                       // Get the value in mg/L instead of %Sat
     value = convert_do(temp_now, value);    
@@ -73,7 +73,7 @@ float convert_do(float temp, float DO_sat){
     float Cp = 0;
     float do_mgL = 0;
     Cp = ((expf(7.7117-1.31403*logf(temp+45.93))) * PRES * (1-expf(11.8571-(3840.7/(temp+273.15))-(216961.0/((temp+273.15)*(temp+273.15))))/PRES) * (1.0-(0.000975-(0.00001426*temp)+(0.00000006436*(temp*temp)))*PRES)) / (1.0-expf(11.8571-(3840.7/(temp+273.15))-(216961.0/((temp+273.15)*(temp+273.15))))) / (1.0-(0.000975-(0.00001426*temp)+(0.00000006436*(temp*temp))));
-    do_mgL = (DO_sat*Cp)/100;
+    do_mgL = (DO_sat*Cp);
     return do_mgL;
 }
 #endif
