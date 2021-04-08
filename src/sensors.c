@@ -39,7 +39,7 @@ float get_temp(){
 
     for(i = 0; i < MAX_SAMPLES; i++){
         value += ds18b20_get_temp();
-        vTaskDelay(SENSOR_DELAY);
+        vTaskDelay(SENSOR_DELAY_TEMP);
     }
 
     return value/MAX_SAMPLES;
@@ -48,22 +48,33 @@ float get_temp(){
 float get_o2(float temp_now){
     uint8_t i;
     float   value = 0;
+    float   value_test = 0;
 
+    // DO's TRT active just to take the samples to not influence the ORP
+    gpio_set_level(GPIO_DO, 1);  
+    // The first measurement is discarted 
+    vTaskDelay(pdMS_TO_TICKS(100));  
+    adc1_get_raw(ADC1_CHANNEL_1);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    //Starts the real measurement
     for(i = 0; i < MAX_SAMPLES; i++){
-        value += (float)adc1_get_raw(ADC1_CHANNEL_1);
-        vTaskDelay(SENSOR_DELAY);
+        while(value_test < ERROR_VALUE) value_test = (float)adc1_get_raw(ADC1_CHANNEL_1);       // Resolve the error value 
+        value += value_test;
+        vTaskDelay(SENSOR_DELAY_PROB);
     }
+    // And inmediatly desactivates
+    gpio_set_level(GPIO_DO, 0);    
 
     value = value/MAX_SAMPLES;
     value = (float)esp_adc_cal_raw_to_voltage(value, &adc_cal); 
 
     value /= O2_CALIBRATION; 
-    //value += O2_SOLUTION_CALIBRATION; //Not need of this
 
     #ifdef CONVERT_DO                       // Get the value in mg/L instead of %Sat
     value = convert_do(temp_now, value);    
     #endif
 
+    value += O2_SOLUTION_CALIBRATION; 
 
     return value;     
 }
@@ -97,18 +108,30 @@ float get_orp(void){
     uint8_t i;
     float   value = 0;
 
+    // DO's TRT active just to take the samples to not influence the ORP
+    gpio_set_level(GPIO_ORP, 1);    
+    // The first measurement is discarted 
+    vTaskDelay(pdMS_TO_TICKS(100));  
+    adc1_get_raw(ADC1_CHANNEL_2);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    //Starts the real measurement
     for(i = 0; i < MAX_SAMPLES; i++){
         value += (float)adc1_get_raw(ADC1_CHANNEL_2);
         //ESP_LOGI("PRUEBAS", "value = %f", value);
-        vTaskDelay(SENSOR_DELAY);
+        vTaskDelay(SENSOR_DELAY_PROB);
     }
+    // And inmediatly desactivates
+    gpio_set_level(GPIO_ORP, 0);  
+
     value /= MAX_SAMPLES;
     //ESP_LOGI("PRUEBAS", "Average value = %f", value);
 
     value = (float)esp_adc_cal_raw_to_voltage(value, &adc_cal);
     //ESP_LOGI("PRUEBAS", "Voltage of value = %f", value);
 
-    value -= (1500 + ORP_CALIBRATION);   
+    value -= 1500;
+    value -= ORP_CALIBRATION;
+       
     //ESP_LOGI("PRUEBAS", "Result of value = %f", value);
 
     return value;

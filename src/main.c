@@ -22,19 +22,17 @@ void main_task(void *p){
 
     //Loop
     while(1){
-
+        
         toSend.id = Temp;
         toSend.data = get_temp();
         lora_utils_send(toSend);
-        
         #ifdef CONVERT_DO
         temp_now = toSend.data;
         #endif
-
         #ifdef DEBUG
         ESP_LOGI(TAG, "TEMP send, %f", toSend.data);
         #endif
-        vTaskDelay(CHANGE_DELAY);
+        vTaskDelay(CHANGE_DELAY_TEMP);
 
         toSend.id = O2;
         toSend.data = get_o2(temp_now);
@@ -42,17 +40,7 @@ void main_task(void *p){
         #ifdef DEBUG
         ESP_LOGI(TAG, "O2 send, %f\n\n", toSend.data);
         #endif
-        vTaskDelay(CHANGE_DELAY);
-
-        #ifdef CONT
-        toSend.id = Cont;
-        toSend.data = get_cont();
-        lora_utils_send(toSend);
-        #ifdef DEBUG
-        ESP_LOGI(TAG, "CONT send, %f", toSend.data);
-        #endif
-        vTaskDelay(CHANGE_DELAY);
-        #endif
+        vTaskDelay(CHANGE_DELAY_DO);
 
         #ifdef ORP
         toSend.id = Orp;
@@ -60,6 +48,16 @@ void main_task(void *p){
         lora_utils_send(toSend);
         #ifdef DEBUG
         ESP_LOGI(TAG, "ORP send, %f", toSend.data);
+        #endif
+        vTaskDelay(CHANGE_DELAY_ORP);
+        #endif
+
+        #ifdef CONT
+        toSend.id = Cont;
+        toSend.data = get_cont();
+        lora_utils_send(toSend);
+        #ifdef DEBUG
+        ESP_LOGI(TAG, "CONT send, %f", toSend.data);
         #endif
         vTaskDelay(CHANGE_DELAY);
         #endif
@@ -75,11 +73,32 @@ void main_task(void *p){
     }
 }
 
+void gpio_init(){
+    //GPIO configuration
+    gpio_config_t gpio_conf = {
+        //disable interrupts
+        .intr_type = GPIO_INTR_DISABLE,
+        //set output mode
+        .mode = GPIO_MODE_OUTPUT,
+        //bit mask of the pins you want to set
+        .pin_bit_mask = (1ULL << GPIO_ORP) | (1ULL << GPIO_DO),
+        //disable pull up and pull down
+        .pull_down_en = 0,
+        .pull_up_en   = 0
+    };
+
+    gpio_config(&gpio_conf);
+    gpio_set_level(GPIO_DO, 0);  
+    gpio_set_level(GPIO_ORP, 0);  
+
+}
+
 void app_main() {
 
     lora_utils_init();
     ds18b20_init(GPIO); // Temp Init
     analog_init();      // Analog sensors init
+    gpio_init();
 
     #ifdef DEBUG
     ESP_LOGI(TAG, "Everything's init. (Teorically)");
